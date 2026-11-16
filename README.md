@@ -54,7 +54,12 @@ standard-library `unittest`; SQLite does not require a separate database server.
 
 ### Input data
 
-The course dataset is **not included in this repository**. Obtain the assigned
+The course dataset is **not included in this repository**. Section 1.4 (page 4)
+of the official task specification states: "Your input data is not required."
+The local MyCampus submission-rules summary requires the complete source code
+in a repository but does not add a requirement to include input CSV files.
+
+Obtain the assigned
 `dataset.zip` separately from the course materials and extract it. Create the
 local input directory:
 
@@ -62,7 +67,12 @@ local input directory:
 mkdir -p data/raw
 ```
 
-Place the three extracted CSV files directly in `data/raw/`, without an extra
+Alternatively, keep the extracted CSV files in their existing directory and run
+`python main.py --data-dir /path/to/csv-files`; no copying into the project is
+needed.
+
+For the default setup, place the three extracted CSV files directly in
+`data/raw/`, without an extra
 nested directory. The expected files are:
 
 | File | Required columns | Rows in the supplied dataset |
@@ -100,7 +110,8 @@ validation, SSE selection, threshold boundaries, ambiguity, repeated x values,
 database contents, streaming, report data and the complete application workflow.
 A successful test run verifies those cases, not every possible input or failure.
 
-The application currently uses German terminal messages and chart labels.
+The application uses English terminal messages, report text, chart labels and
+validation messages.
 
 ## Validation and calculation
 

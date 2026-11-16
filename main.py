@@ -79,17 +79,17 @@ def main() -> int:
             for output in stage.iterdir():
                 output.replace(args.output_dir / output.name)
     except (DataValidationError, OSError, SQLAlchemyError) as error:
-        print(f"Fehler: {error}", file=sys.stderr)
+        print(f"Error: {error}", file=sys.stderr)
         return 1
-    print("Datenprüfung, Berechnung, SQLite-Speicherung und Diagramme erfolgreich.")
+    print("Data validation, calculation, SQLite storage and report generation completed successfully.")
     for fit in fits:
         print(f"{fit.training_function} -> {fit.ideal_function}: "
-              f"SSE={fit.sse:.6f}, Grenze={fit.threshold:.6f}")
-    print(f"Testpunkte: {len(assigned)} zugeordnet, "
-          f"{len(assignments) - len(assigned)} ohne Zuordnung; "
-          f"{matching_summary['multiple_eligible']} mit mehreren Kandidaten.")
-    print(f"Datenbank: {args.output_dir / 'assignment.sqlite'}")
-    print(f"Diagramme: {args.output_dir / 'visualizations.html'}")
+              f"SSE={fit.sse:.6f}, threshold={fit.threshold:.6f}")
+    print(f"Test observations: {len(assigned)} assigned, "
+          f"{len(assignments) - len(assigned)} unassigned; "
+          f"{matching_summary['multiple_eligible']} with multiple eligible candidates.")
+    print(f"Database: {args.output_dir / 'assignment.sqlite'}")
+    print(f"Report: {args.output_dir / 'visualizations.html'}")
     return 0
 
 

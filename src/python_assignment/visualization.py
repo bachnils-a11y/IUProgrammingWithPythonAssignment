@@ -22,17 +22,17 @@ def build_report(data: CourseData, fits: list[FunctionFit],
     accepted = assignments[assignments["status"] == "assigned"]
     rejected = assignments[assignments["status"] == "unassigned"]
     ambiguous = int((assignments["eligible_count"] > 1).sum())
-    intro = Div(text=f"""<h1>Programming with Python: Ergebnisse</h1>
-        <p>{len(assignments)} Testpunkte: <b>{len(accepted)} zugeordnet</b>,
-        {len(rejected)} nicht zugeordnet; {ambiguous} mit mehreren Kandidaten.</p>
-        <p>Auswahl: kleinste Summe quadrierter y-Abweichungen (SSE).
-        Zuordnung: |Abweichung| ≤ √2 × maximale absolute Trainingsabweichung.
-        Mehrfachtreffer: kleinste Abweichung, dann kleinste Funktionsnummer.
-        Diese zusätzliche Entscheidungsregel ist vorläufig.</p>
-        <p>Die Funktionsansichten verwenden getrennte y-Skalen.
-        Mit den Werkzeugen zoomen; Legenden anklicken, um Reihen auszublenden.</p>""",
+    intro = Div(text=f"""<h1>Programming with Python: Results</h1>
+        <p>{len(assignments)} test observations: <b>{len(accepted)} assigned</b>,
+        {len(rejected)} unassigned; {ambiguous} with multiple eligible candidates.</p>
+        <p>Selection: minimum sum of squared y deviations (SSE).
+        Assignment: |deviation| ≤ √2 × maximum absolute training deviation.
+        Multiple eligible candidates: smallest deviation, then lowest function ID.
+        This additional decision rule is a documented implementation assumption.</p>
+        <p>The function panels use separate y scales.
+        Use the tools to zoom; click legend entries to hide series.</p>""",
                 sizing_mode="stretch_width")
-    overview = figure(title="Alle Testpunkte: Zuordnung und Ablehnung",
+    overview = figure(title="All test observations: assigned and unassigned",
                       height=360, sizing_mode="stretch_width",
                       x_axis_label="x", y_axis_label="y",
                       tools="pan,wheel_zoom,box_zoom,reset,save")
@@ -43,13 +43,13 @@ def build_report(data: CourseData, fits: list[FunctionFit],
         subset = accepted[accepted["ideal_function"] == number]
         overview.scatter("x", "y", source=ColumnDataSource(subset.to_dict(orient="list")), size=8,
                          color=colors[index % len(colors)],
-                         legend_label=f"Idealfunktion y{number}")
+                         legend_label=f"Ideal function y{number}")
     overview.scatter("x", "y", source=ColumnDataSource(rejected.to_dict(orient="list")), marker="x",
-                     size=9, color="#666666", legend_label="Nicht zugeordnet")
-    overview.add_tools(HoverTool(tooltips=[("Testzeile", "@test_row"),
+                     size=9, color="#666666", legend_label="Unassigned")
+    overview.add_tools(HoverTool(tooltips=[("Test row", "@test_row"),
                                          ("x / y", "@x / @y"),
                                          ("Status", "@status"),
-                                         ("Kandidaten", "@eligible_count")]))
+                                         ("Eligible candidates", "@eligible_count")]))
     overview.legend.click_policy = "hide"
     panels = []
     ideal = data.ideal.frame.set_index("x")
@@ -67,17 +67,17 @@ def build_report(data: CourseData, fits: list[FunctionFit],
                       x_axis_label="x", y_axis_label="y",
                       tools="pan,wheel_zoom,box_zoom,reset,save")
         plot.line(training["x"], ideal_values, color=color, line_width=2,
-                  legend_label="Idealfunktion")
+                  legend_label="Ideal function")
         plot.scatter(training["x"], training[fit.training_function], size=4,
                      color="#87929e", alpha=0.6, legend_label="Training")
         renderer = plot.scatter("x", "y", source=source, marker="diamond", size=10,
-                                color="#c52a34", legend_label="Zugeordnete Testpunkte")
+                                color="#c52a34", legend_label="Assigned test observations")
         plot.add_tools(HoverTool(renderers=[renderer], tooltips=[
-            ("Testzeile", "@test_row"), ("|Δy|", "@delta_y{0.000000}")]))
+            ("Test row", "@test_row"), ("|Δy|", "@delta_y{0.000000}")]))
         plot.legend.click_policy = "hide"
         plot.legend.location = "top_left"
         plot.legend.label_text_font_size = "9px"
-        residual = figure(title=f"Absolute Abweichungen · Grenze {fit.threshold:.6f}",
+        residual = figure(title=f"Absolute deviations · Threshold {fit.threshold:.6f}",
                           height=250, sizing_mode="stretch_width",
                           x_axis_label="x", y_axis_label="|Δy|",
                           tools="pan,wheel_zoom,box_zoom,reset,save")
@@ -92,15 +92,15 @@ def build_report(data: CourseData, fits: list[FunctionFit],
                          train_deltas,
                          size=4, color="#87929e", alpha=0.6, legend_label="Training")
         residual.scatter("x", "delta_y", source=source, size=8, color="#c52a34",
-                         legend_label="Zugeordnete Testpunkte")
+                         legend_label="Assigned test observations")
         residual.add_layout(Span(location=fit.threshold, dimension="width",
                                  line_color="#d14900", line_dash="dashed",
                                  line_width=2))
         residual.legend.click_policy = "hide"
         residual.legend.label_text_font_size = "9px"
         caption = Div(text=f"<p><b>SSE:</b> {fit.sse:.6f} · "
-                           f"<b>Max. Trainingsabweichung:</b> {fit.max_deviation:.6f} · "
-                           f"<b>Grenze:</b> {fit.threshold:.6f} (gestrichelt)</p>")
+                           f"<b>Max. training deviation:</b> {fit.max_deviation:.6f} · "
+                           f"<b>Threshold:</b> {fit.threshold:.6f} (dashed)</p>")
         panels.append(column(plot, residual, caption, sizing_mode="stretch_width"))
     # Separate plots retain their own scales despite the shared two-column layout.
     grid = gridplot([panels[i:i+2] for i in range(0, len(panels), 2)],
@@ -114,5 +114,5 @@ def write_report(path: Path, data: CourseData, fits: list[FunctionFit],
     """Save HTML with BokehJS embedded, requiring no server or network access."""
     document = build_report(data, fits, assignments)
     # INLINE embeds BokehJS so the report can be opened without internet access.
-    path.write_text(file_html(document, INLINE, "Python-Hausarbeit: Ergebnisse"),
+    path.write_text(file_html(document, INLINE, "Python Assignment: Results"),
                     encoding="utf-8")
