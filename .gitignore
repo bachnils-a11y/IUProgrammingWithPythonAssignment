@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+data/raw/
+dataset.zip
+results/
+
+/Uni Docs/
+.DS_Store
+.env
+.env.*
+__pycache__/
+*.pyc
+.venv/
+~$*.docx
