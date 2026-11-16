@@ -4,9 +4,11 @@ Python implementation for course **DLMDSPWP01**. The program validates the suppl
 CSV data, selects ideal functions by least squares, maps test observations,
 stores the required SQLite tables and generates an interactive Bokeh report.
 
-The technical workflow is implemented. The written assignment, independent
-review of the results and confirmation of course-specific submission requirements
-are still outstanding. The original course PDFs and dataset archive are unchanged.
+The implementation and written report have been prepared. The reported results
+were independently recalculated, confirming the selected functions and assignment
+counts. The written report is submitted separately and links to this repository
+for the complete application and test code instead of including source listings
+in its appendix.
 
 ## Project structure
 
@@ -18,16 +20,24 @@ src/python_assignment/
     matching.py                  Function selection and observation mapping
     storage.py                   SQLite persistence through SQLAlchemy
     visualization.py             Standalone Bokeh report
- tests/                          Automated tests
- data/raw/                       Original extracted CSV files
- results/                        Generated reports, exports and database
- requirements.txt                Recorded package versions
+tests/                           Automated tests
+requirements.txt                 Recorded package versions
+data/raw/                        Local input CSV files (not tracked)
+results/                         Generated outputs (not tracked)
 ```
 
 ## Setup
 
-Run the following commands from the project folder. If `.venv` already exists,
-skip its creation and activate it directly.
+Clone the repository and enter its directory. For an existing local checkout,
+start in that project folder and skip these two commands.
+
+```bash
+git clone https://github.com/bachnils-a11y/IUProgrammingWithPythonAssignment.git
+cd IUProgrammingWithPythonAssignment
+```
+
+Create and activate a virtual environment, then install the dependencies.
+If `.venv` already exists, skip its creation and activate it directly.
 
 ```bash
 python3 -m venv .venv
@@ -42,8 +52,18 @@ The main external dependencies are NumPy, pandas, SQLAlchemy and Bokeh.
 `requirements.txt` also records their installed dependencies. Tests use Python's
 standard-library `unittest`; SQLite does not require a separate database server.
 
-Extract the supplied `dataset.zip` into `data/raw/` if the CSV files are not
-already there. The expected files are:
+### Input data
+
+The course dataset is **not included in this repository**. Obtain the assigned
+`dataset.zip` separately from the course materials and extract it. Create the
+local input directory:
+
+```bash
+mkdir -p data/raw
+```
+
+Place the three extracted CSV files directly in `data/raw/`, without an extra
+nested directory. The expected files are:
 
 | File | Required columns | Rows in the supplied dataset |
 |---|---|---:|
@@ -52,6 +72,10 @@ already there. The expected files are:
 | `test.csv` | `x`, `y` | 100 |
 
 The row counts describe the supplied data; they are not hard-coded requirements.
+The repository's `.gitignore` excludes `data/raw/`, `dataset.zip`, `results/` and
+`Uni Docs/`. A fresh clone therefore contains neither the input data nor the
+written report or generated results. The application creates its output directory
+and files when run successfully.
 
 ## Run the application and tests
 
@@ -60,6 +84,9 @@ source .venv/bin/activate
 python main.py
 python -m unittest discover -s tests -v
 ```
+
+The tests use synthetic fixtures and can run without the course dataset.
+Running `python main.py` requires the three input CSV files described above.
 
 Default paths are resolved relative to `main.py`, rather than the terminal's
 working directory. Custom locations can be passed explicitly:
@@ -194,16 +221,23 @@ Final files are replaced individually, not in a single transaction across all
 outputs. A failure during that final publication step can leave mixed results;
 rerun the program after addressing the error.
 
-## Remaining assignment work
+## Written report and verification
 
-- Independently review the implementation and verify representative calculations.
-- Confirm the assigned dataset and any additional course-specific rules.
-- Resolve ambiguous matching/storage instructions if necessary.
-- Obtain the writing guide, marking criteria, required length, report language,
-  submission format and deadline.
-- Write the discussion of methods, architecture, tests, results and limitations
-  using verified references.
-- Complete the Git workflow explanation and prepare the full source-code appendix.
+The separate written report explains the mathematical method, software design,
+tests, results and limitations. It also includes the additional Git exercise as
+a hypothetical team workflow; it does not claim that this repository was developed
+through that collaborative process. Its appendices provide the repository link,
+reproduction instructions and an AI assistance statement.
+
+An independent calculation using CSV records and scalar arithmetic confirmed
+the selections y13, y24, y36 and y40, the 34 assigned and 66 unassigned observations,
+and the one observation with two eligible candidates. This supports the reported
+results for the supplied files, not correctness for every possible input.
+
+The assigned dataset and current course submission requirements must still be
+checked against the official course instructions before submission.
+
+## AI assistance
 
 AI assistance was used to develop and document this implementation. The student
 remains responsible for understanding, checking and explaining the submitted
